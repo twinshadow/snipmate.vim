@@ -80,8 +80,9 @@ snippet fore
 # Package
 snippet cl
 	package ${1:ClassName};
-
-	use base qw(${2:ParentClass});
+	use strict;
+	use warnings;
+	use parent qw(${2:ParentClass});
 
 	sub new {
 		my $class = shift;
@@ -95,3 +96,14 @@ snippet cl
 snippet slurp
 	my $${1:var};
 	{ local $/ = undef; local *FILE; open FILE, "<${2:file}"; $$1 = <FILE>; close FILE }${3}
+# Moose Attribute
+snippet has
+	has '${1:attribute}' => { 'is' => '${2:ro/rw}', 'isa' => '${3:type}' };${4}
+# Moose Class Template
+snippet moose
+	package ${1:ClassName}
+	use Moose;
+
+	${2}
+
+	__PACKAGE__->meta->make_immutable;

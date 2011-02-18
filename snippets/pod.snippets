@@ -1,0 +1,77 @@
+# Heading Name
+snippet name
+	=head1 NAME
+	${1}
+# Heading Version
+snippet vers
+	=head1 VERSION
+	${1}
+# Heading 1
+snippet h1
+	=head1 ${1:Heading text}
+	${2}
+# Heading 2
+snippet h2
+	=head2 ${1:Heading text}
+	${2}
+# Heading 3
+snippet h3
+	=head3 ${1:Heading text}
+	${2}
+# Heading 4
+snippet h4
+	=head4 ${1:Heading text}
+	${2}
+# Cut
+snippet cut
+	=cut
+	${1}
+# Over/Back list
+snippet over
+	=over ${1:Indent level}
+	
+	${2}
+	
+	=back
+# Item list
+snippet item
+	=item ${1:Name}
+	${2}
+# Begin/End formatting
+snippet format
+	=begin ${1:Format name}
+	${3}
+	=end $1
+# For formatting
+snippet for
+	=for ${1:Format name}
+	${2}
+# Encoding
+snippet encoding
+	=encoding ${1:Encoding name}
+	${2}
+# Switch formatting
+# Bold
+snippet B
+	B<${1:Bold text}>${2}
+# Code
+snippet C
+	C<${1:Code}>${2}
+# Escape
+snippet E
+	E<${1:Characters}>${2}
+# Filename
+snippet F
+	F<${1:Filename}>${2}
+# Italics
+snippet I
+	I<${1:Italic text}>${2}
+# Link
+snippet L
+	L<${1:Text}|${2:Link}>${3}
+# Non-Breaking Spaces
+snippet S
+	S<${1:Text}>${2}
+# Topic Name
+snippet X
+	X<${1:Topic name}>${2}
