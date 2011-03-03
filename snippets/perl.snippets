@@ -1,10 +1,19 @@
-# #!/usr/bin/perl
+# #!/usr/bin/env perl
 snippet #!
-	#!/usr/bin/perl
-
+	#!/usr/bin/env perl
+	use strict;
+	use warnings;
+	${1}
+# #!perl -T
+snippet #!t
+	#!perl -T
+	use strict;
+	use warnings;
+	use Test::More;
+	${1}
 # Hash Pointer
 snippet .
-	 =>
+	 => ${1}
 # Function
 snippet sub
 	sub ${1:function_name} {
@@ -96,6 +105,11 @@ snippet cl
 snippet slurp
 	my $${1:var} = do { local $/; open my $file, '<', "${2:file}"; <$file> };
 	${3}
+# Key walk
+snippet keywalk
+	foreach keys(${1:hash}) {
+		${2}
+	}
 # Moose Attribute
 snippet has
 	has '${1:attribute}' => { 'is' => '${2:ro/rw}', 'isa' => '${3:type}' };${4}
