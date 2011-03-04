@@ -121,3 +121,6 @@ snippet moose
 	${2}
 
 	__PACKAGE__->meta->make_immutable;
+# Data::Dumper one-liner
+snippet dump
+	require Data::Dumper; print Data::Dumper::Dumper(${1});
