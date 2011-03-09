@@ -109,6 +109,19 @@ snippet new
 		my $self = bless ({}, $class);
 		return $self;
 	}
+# sub new && process args
+snippet xnew
+	sub new {
+		my $class = shift;
+		$class = ref $class if ref $class;
+
+		my $self = bless ({}, $class);
+
+		my %args = @_;
+		for my $key ( keys %args ) { $self->$key( $args{ $key } ) }
+
+		return $self;
+	}
 # Read File
 snippet slurp
 	my $${1:var} = do { local $/; open my $file, '<', "${2:file}"; <$file> };
