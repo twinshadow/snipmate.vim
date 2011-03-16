@@ -1,22 +1,67 @@
-# #!/usr/bin/env perl
+# Script header
 snippet #!
 	#!/usr/bin/env perl
 	use strict;
 	use warnings;
 	${1}
-# #!perl -Tw
+# Script header w/ Taint checks
 snippet #!t
-	#!perl -Tw
+	#!/usr/bin/env perl -Tw
 	use strict;
 	use warnings;
 	${1}
+# Moose Class Template
+snippet moose
+	package ${1:ClassName}
+	use Moose;
+
+	${2}
+
+	__PACKAGE__->meta->make_immutable;
+# Package
+snippet cl
+	package ${1:ClassName};
+	use strict;
+	use warnings;
+	use parent qw(${2:ParentClass});
+
+	sub new {
+		my $class = shift;
+		my $self = bless ({}, $class);
+		return $self;
+	}
+
+	${3}
+
+	1;
+# sub new {...
+snippet new
+	sub new {
+		my $class = shift;
+		my $self = bless ({}, $class);
+		return $self;
+	}
+# sub new && process args
+snippet xnew
+	sub new {
+		my $class = shift;
+		my $self = bless ({}, $class);
+
+		my %args = @_;
+		for my $key ( keys %args ) { $self->$key( $args{ $key } ) }
+
+		return $self;
+	}
+# Moose Accessors
+snippet has
+	has ${1:attribute} => { is => '${2:ro}', ${3}};${4}
 # Hash Pointer
 snippet .
 	 => ${1}
 # Function
 snippet sub
-	sub ${1:function_name} {
-		${2:#body ...}
+	sub ${1:function_name} ${2:prototype} {
+		${3:#body ...}
 	}
 # Conditional
 snippet if
@@ -42,6 +87,11 @@ snippet ifee
 	else {
 		${5:# else...}
 	}
+# Conditional elseif
+snippet elsif
+	elsif (${1}) {
+		${2:# elsif...}
+	}
 # Conditional One-line
 snippet xif
 	${1:expression} if ${2:condition};${3}
@@ -53,6 +103,21 @@ snippet unless
 # Unless conditional One-line
 snippet xunless
 	${1:expression} unless ${2:condition};${3}
+# Switch/Case P6-style
+snippet given
+	given (${1}) {
+		${2}
+	}
+# Case P6-style
+snippet when
+	when (${1}) {
+		${2:# caught...}
+	}
+# Default P6-style
+snippet def
+	default {
+		${1:# default...}
+	}
 # Try/Except
 snippet eval
 	eval {
@@ -76,50 +141,18 @@ snippet cfor
 	}
 # For loop one-line
 snippet xfor
-	${1:expression} for @${2:array};${3}
+	${1:expression} for ${2:array};${3}
 # Foreach Loop
 snippet for
-	foreach my $${1:x} (@${2:array}) {
+	for my $${1:x} (${2:array}) {
 		${3:# body...}
 	}
-# Foreach Loop One-line
-snippet fore
-	${1:expression} foreach @${2:array};${3}
-# Package
-snippet cl
-	package ${1:ClassName};
-	use strict;
-	use warnings;
-	use parent qw(${2:ParentClass});
-
-	sub new {
-		my $class = shift;
-		$class = ref $class if ref $class;
-		my $self = bless ({}, $class);
-		return $self;
-	}
-
-	1;${3}
-# sub new {...
-snippet new
-	sub new {
-		my $class = shift;
-		$class = ref $class if ref $class;
-		my $self = bless ({}, $class);
-		return $self;
-	}
-# sub new && process args
-snippet xnew
-	sub new {
-		my $class = shift;
-		$class = ref $class if ref $class;
-
-		my $self = bless ({}, $class);
-
-		my %args = @_;
-		for my $key ( keys %args ) { $self->$key( $args{ $key } ) }
-
-		return $self;
+# Foreach When loop
+snippet forw
+	for (${1:array}) {
+		when (${2:# condition...}) {
+			${3:# caught...}
+		}
 	}
 # Read File
 snippet slurp
@@ -127,20 +160,9 @@ snippet slurp
 	${3}
 # Key walk
 snippet keywalk
-	foreach keys(${1:hash}) {
+	foreach (keys (${1:hash})) {
 		${2}
 	}
-# Moose Attribute
-snippet has
-	has '${1:attribute}' => { 'is' => '${2:ro/rw}', 'isa' => '${3:type}' };${4}
-# Moose Class Template
-snippet moose
-	package ${1:ClassName}
-	use Moose;
-
-	${2}
-
-	__PACKAGE__->meta->make_immutable;
 # Data::Dumper one-liner
 snippet dump
-	require Data::Dumper; print Data::Dumper::Dumper(${1});
+	require Data::Dumper;print Data::Dumper::Dumper(${1});die;
