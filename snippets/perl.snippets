@@ -156,7 +156,7 @@ snippet forw
 	}
 # Read File
 snippet slurp
-	my $${1:var} = do { local $/; open my $file, '<', "${2:file}"; <$file> };
+	my $${1:var} = do { local $/; open (my $file, '<', "${2:file}") or die "Can't open ${2:file}e: $!"; <$file> };
 	${3}
 # Key walk
 snippet keywalk
