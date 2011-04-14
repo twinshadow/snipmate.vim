@@ -147,6 +147,7 @@ snippet for
 	for my $${1:x} (${2:array}) {
 		${3:# body...}
 	}
+
 # Foreach When loop
 snippet forw
 	for (${1:array}) {
@@ -156,8 +157,8 @@ snippet forw
 	}
 # Read File
 snippet slurp
-	my $${1:var} = do { local $/; open (my $file, '<', "${2:file}") or die "Can't open ${2:file}e: $!"; <$file> };
-	${3}
+	my $${1:var} = do { local $/; open (my $${3:file_handle}, '<', "${2:file_location}") or die "Can't open $2: $!"; <$$3> };
+	${4}
 # Key walk
 snippet keywalk
 	foreach (keys (${1:hash})) {
