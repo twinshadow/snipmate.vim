@@ -20,16 +20,16 @@ snippet for
 		${3:# code...}
 # New Class
 snippet cl
-	class ${1:ClassName}(${2:object}):
-		"""${3:docstring for $1}"""
-		def __init__(self, ${4:arg}):
+	class ${1:ClassName} (${2:object}):
+		'''${3:docstring for $1}'''
+		def __init__ (self, ${4:arg}):
 			${5:super($1, self).__init__()}
 			self.$4 = $4
 			${6}
 # New Function
 snippet def
 	def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):
-		"""${3:docstring for $1}"""
+		'''${3:docstring for $1}'''
 		${4:pass}
 snippet deff
 	def ${1:fname}(${2:`indent('.') ? 'self' : ''`}):
@@ -37,7 +37,8 @@ snippet deff
 # New Method
 snippet defs
 	def ${1:mname}(self, ${2:arg}):
-		${3:pass}
+		'''${3:docstring}'''
+		${4:pass}
 # New Property
 snippet property
 	def ${1:foo}():
@@ -51,6 +52,25 @@ snippet ld
 	${1:var} = lambda ${2:vars} : ${3:action}
 snippet .
 	self.
+snippet if
+	if ${1}:
+		${2}
+snippet elif:
+	elif ${1}:
+		${2}
+snippet else
+	else:
+		${1}
+snippet ife
+	if ${1:cond}:
+		${2}
+	else:
+		${3}
+snippet iff
+	if ${1:cond}:
+		${2}
+	elif ${3:cond}:
+		${4}
 snippet try Try/Except
 	try:
 		${1:pass}
@@ -81,8 +101,7 @@ snippet try Try/Except/Else/Finally
 		${6:pass}
 # if __name__ == '__main__':
 snippet ifmain
-	if __name__ == '__main__':
-		${1:main()}
+	if __name__ is '__main__': ${1:main()}
 # __magic__
 snippet _
 	__${1:init}__${2}
@@ -95,22 +114,17 @@ snippet ipdb
 # ipython debugger (pdbbb)
 snippet pdbbb
 	import pdbpp; pdbpp.set_trace()
-# GPL
-snippet gpl
-	# ${1:Name}
-	# Copyright (C) `strftime("%Y")` ${2:Author}
-	#
-	# This program is free software: you can redistribute it and/or modify
-	# it under the terms of the GNU General Public License as published by
-	# the Free Software Foundation, either version 3 of the License, or
-	# (at your option) any later version.
-	#
-	# This program is distributed in the hope that it will be useful,
-	# but WITHOUT ANY WARRANTY; without even the implied warranty of
-	# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	# GNU General Public License for more details.
-	#
-	# You should have received a copy of the GNU General Public License
-	# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-	
-	${3:#code}
+# Getopt Function
+	snippet getopt
+	def ${1:main} ():
+		from getopt import getopt, GetoptError
+		from sys import argv, exit
+
+		try:
+			opts, args = getopt(argv[1:], '${2:short}', [${3:long}])
+
+		except GetoptError, ex:
+			print str(ex)
+			usage ()
+			exit (2)
+		${4}
