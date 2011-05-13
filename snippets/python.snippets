@@ -115,7 +115,7 @@ snippet ipdb
 snippet pdbbb
 	import pdbpp; pdbpp.set_trace()
 # Getopt Function
-	snippet getopt
+snippet getopt
 	def ${1:main} ():
 		from getopt import getopt, GetoptError
 		from sys import argv, exit
@@ -128,3 +128,51 @@ snippet pdbbb
 			usage ()
 			exit (2)
 		${4}
+snippet fork
+	${1:cmd} = shlex.split('${2:args}')
+	${3} = subprocess.Popen ($1, stdout=subprocess.PIPE).communicate()[0]
+	${4}
+snippet pipein
+	${1:cmd} = shlex.split('${2:args}')
+	${3:p1} = subprocess.Popen (shlex.split($1}), stdout=subprocess.PIPE)
+	${4}
+snippet pipeout
+	${1:cmd} = shlex.split('${2:args}')
+	${3:p2} = subprocess.Popen(shlex.split($1), stdin=${4:p1}.stdout, stdout=subprocess.PIPE)
+	${5}
+snippet match
+	${1} = re.match(${2:regex}, ${3:string})
+	${4}
+snippet search
+	${1} = re.search(${2:regex}, ${3:string})
+	${4}
+snippet atoi
+	try:
+		${1:number} = int(${2:text})
+	except exceptions.ValueError:
+		$1 = float($2)
+	${3}
+snippet atod
+	try:
+		${1:number} = float(${2:text})
+	except exceptions.ValueError:
+		$1 = int($2)
+	${3}
+snippet tmpfile
+	${1} = tempfile.NamedTemporaryFile(${2:mode, bufsize, suffix, prefix, dir, delete})
+	${3}
+snippet email
+	def ${1} (${2:text}):
+		from smtplib import SMTP
+		from email.mime.text import MIMEText
+
+		msg = MIMEText($2)
+		msg['Subject'] = ${3}
+		msg['From'] = ${4}
+		msg['To'] = ${5}
+
+		s = SMTP('localhost')
+		s.sendmail(msg['From'], [msg.['To']], msg.as_string())
+		s.quit()
+	${6}
+
