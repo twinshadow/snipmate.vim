@@ -50,6 +50,8 @@ snippet property
 # Lambda
 snippet ld
 	${1:var} = lambda ${2:vars} : ${3:action}
+snippet ldl
+	[(lambda ${1:v}=$1: ${2:eval}) for $1 in ${3:list}]
 snippet .
 	self.
 snippet if
@@ -100,8 +102,8 @@ snippet try Try/Except/Else/Finally
 	finally:
 		${6:pass}
 # if __name__ == '__main__':
-snippet ifmain
-	if __name__ is '__main__': ${1:main()}
+snippet main
+	if __name__ == '__main__': ${1:main()}
 # __magic__
 snippet _
 	__${1:init}__${2}
@@ -130,15 +132,15 @@ snippet getopt
 		${4}
 snippet fork
 	${1:cmd} = shlex.split('${2:args}')
-	${3} = subprocess.Popen ($1, stdout=subprocess.PIPE).communicate()[0]
+	${3:var} = subprocess.Popen ($1, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
 	${4}
-snippet pipein
+snippet pin
 	${1:cmd} = shlex.split('${2:args}')
-	${3:p1} = subprocess.Popen (shlex.split($1}), stdout=subprocess.PIPE)
+	${3:p1} = subprocess.Popen (shlex.split($1}), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	${4}
-snippet pipeout
+snippet pout
 	${1:cmd} = shlex.split('${2:args}')
-	${3:p2} = subprocess.Popen(shlex.split($1), stdin=${4:p1}.stdout, stdout=subprocess.PIPE)
+	${3:p2} = subprocess.Popen(shlex.split($1), stdin=${4:p1}.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	${5}
 snippet match
 	${1} = re.match(${2:regex}, ${3:string})
@@ -150,13 +152,7 @@ snippet atoi
 	try:
 		${1:number} = int(${2:text})
 	except exceptions.ValueError:
-		$1 = float($2)
-	${3}
-snippet atod
-	try:
-		${1:number} = float(${2:text})
-	except exceptions.ValueError:
-		$1 = int($2)
+		$1 = int(float($2))
 	${3}
 snippet tmpfile
 	${1} = tempfile.NamedTemporaryFile(${2:mode, bufsize, suffix, prefix, dir, delete})
@@ -175,4 +171,147 @@ snippet email
 		s.sendmail(msg['From'], [msg.['To']], msg.as_string())
 		s.quit()
 	${6}
+snippet readline
+	USING_READLINE = True
+	try:
+		# For platforms without readline support go visit ...
+		# http://pypi.python.org/pypi/readline/
+		import readline
+	except:
+		try:
+			# For Windows readline support go visit ...
+			# https://launchpad.net/pyreadline
+			import pyreadline
+		except:
+			USING_READLINE = False
+	${6}
+snippet cmd
+	class Interactive (Cmd):
+		def __init__ (self, prompt = "#", intro = "This is a command-oriented program"):
+			Cmd.__init__ (self)
 
+			if not USING_READLINE:
+				self.completekey = None
+
+			self.prompt = prompt
+			self.intro  = intro
+
+		def default (self, line):
+			cmd, arg, line = self.parseline (line)
+			cmds = self.completenames (cmd)
+			num_cmds = len(cmds)
+
+			if num_cmds == 1:
+				getattr (self, 'do_'+cmds[0]) (arg)
+			elif num_cmds > 1:
+				self.echo ('%% Ambiguous command:\t"%s"\n' % cmd)
+			else:
+				self.echo ('% Unrecognized command\n')
+
+		def echo (self, msg):
+			sys.stdout.write (msg)
+
+		def emptyline (self):
+			pass
+
+		def do_help (self, arg):
+			doc_strings = [ (i[3:], getattr (self, i).__doc__)
+				for i in dir(self) if i.startswith ('do_') ]
+			doc_strings = [ '  %s\t%s\n' % (i, j)
+				for i, j in doc_strings if j is not None ]
+			self.echo ('Commands:\n%s\n' % ''.join (doc_strings))
+
+		def precmd (self, line):
+			if line.strip () == 'help':
+				self.echo ('%s\n' % self.__doc__)
+				return ''
+
+			cmd, arg, line = self.parseline (line)
+			if arg == '?':
+				cmds = self.completenames (cmd)
+				if cmds:
+					self.columnize (cmds)
+					self.echo ('\n')
+				return ''
+			return line
+
+		def query (self, query):
+			self.echo (query)
+			return stdin.readline().strip()
+snippet '''
+	'''${1}'''
+	${2}
+snippet sinit
+	def __init__(self, *args, **kwargs):
+		${1}.__init__(self, *args, **kwargs)
+	${2}
+snippet popen
+	def popen(cmd, *args):
+		'''
+		Wraps subprocess output in an object.
+		'''
+		from subprocess import call, PIPE, Popen, STDOUT
+		import shlex
+		if isinstance(cmd, str):
+			cmd = tuple(shlex.split(cmd))
+
+		if len(args) is 1:
+			args = tuple(shlex.split(args[0]),)
+
+		cmd = cmd + args
+		run = Popen(cmd, stdout=PIPE, stderr=PIPE)
+		stdout, stderr = run.communicate()
+		returncode = run.returncode
+
+		class Command(object):
+			def __init__(self, stdout, stderr, returncode):
+				self.stdout = stdout.strip()
+				self.stderr = stderr.strip()
+				self.returncode = returncode
+
+			def __str__(self):
+				return self.stdout
+
+		return Command(stdout, stderr, returncode)
+snippet call
+	def call(cmd, *args):
+		pass
+snippet telnet
+	try:
+		import telnetlib
+		tn = telnetlib.Telnet(${1:ipaddr}, ${2:port})
+	except socket.error:
+		$3
+snippet clog
+	def logger(self, level, msg):
+			getattr(logging, level)('%s: %s' % (self.name or self.__class__.__name__, msg))
+snippet timer
+	def uptimer(self, timeout=0):
+		start = time()
+		timeout = (timeout or self.timeout)
+		timer_timeout = (start + timeout)
+
+		while time() <= timer_timeout:
+			sleep(1)
+snippet stree
+	def str2dict(text, f='=', d='.'):
+		tree = {}
+		if isinstance(text, str):
+			text = text.splitlines()
+
+		for line in text:
+			a = b = tree
+			split = line.split(f, 2)
+			if len(split) < 2:
+				continue
+			key, val = split
+			val = val.strip()
+			for node in key.split()[0].split(d):
+				a = b
+				if node in a:
+					pass
+				else:
+					a[node] = {}
+				b = a[node]
+			a[node] = val
+		return tree
