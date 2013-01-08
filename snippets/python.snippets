@@ -103,7 +103,8 @@ snippet try Try/Except/Else/Finally
 		${6:pass}
 # if __name__ == '__main__':
 snippet main
-	if __name__ == '__main__': ${1:main()}
+	if __name__ == "__main__":
+		${1:main()}
 # __magic__
 snippet _
 	__${1:init}__${2}
@@ -308,9 +309,7 @@ snippet stree
 			val = val.strip()
 			for node in key.split()[0].split(d):
 				a = b
-				if node in a:
-					pass
-				else:
+				if node not in a:
 					a[node] = {}
 				b = a[node]
 			a[node] = val
