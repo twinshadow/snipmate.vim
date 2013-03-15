@@ -4,14 +4,14 @@ snippet main
 	main(int argc, char **argv)
 	{
 		${1}
-		return(0);
+		return (EXIT_SUCCESS);
 	}
 snippet mainn
 	int
 	main(void)
 	{
 		${1}
-		return(0);
+		return (EXIT_SUCCESS);
 	}
 # #include <...>
 snippet inc
@@ -128,6 +128,6 @@ snippet getopt
 		switch(opt)
 		{
 			default:
-				return(2);
+				return(EINVAL);
 		}
 	}

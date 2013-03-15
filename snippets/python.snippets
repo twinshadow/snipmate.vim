@@ -295,22 +295,40 @@ snippet timer
 		while time() <= timer_timeout:
 			sleep(1)
 snippet stree
-	def str2dict(text, f='=', d='.'):
+	def str2dict(text, value_split='=', branch_split='.'):
 		tree = {}
 		if isinstance(text, str):
 			text = text.splitlines()
 
 		for line in text:
 			a = b = tree
-			split = line.split(f, 2)
-			if len(split) < 2:
-				continue
-			key, val = split
+			key, value = line.split(value_split, 2)
 			val = val.strip()
-			for node in key.split()[0].split(d):
+			for node in key.split()[0].split(branch_split):
 				a = b
 				if node not in a:
 					a[node] = {}
 				b = a[node]
 			a[node] = val
 		return tree
+snippet mainopts
+	import optparse
+	progname = os.path.basename(sys.argv[0])
+	parser = optparse.OptionParser(
+			description="",
+			usage="%prog [options]",
+			version="%prog: $Id$")
+	parser.add_option('-f', '--logfile', action="store",
+			dest='logfile', default='/var/log/%s' % progname,
+			help="A file path to write logging output to")
+	parser.add_option('-L', '--loglevel', action="store",
+			dest="loglevel", default="INFO",
+			help="The default logging level to print. "
+				"The default is %default")
+	(opts, args) = parser.parse_args()
+	opts.loglevel = getattr(logging, opts.loglevel.upper())
+	logopts = {'level': opts.loglevel,
+			'format': "%(asctime)-15s::%(levelname)s:%(name)s: %(message)s"}
+	logging.basicConfig(**logopts)
+	log = logging.getLogger('main')
+
